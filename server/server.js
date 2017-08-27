@@ -14,9 +14,19 @@ var io = socketIO(server);
 io.on('connection', (socket) => {
     console.log('New user is connected');
 
+    socket.broadcast.emit('newMessage', {
+        from: 'Admin',
+        text: 'New user just connected',
+        createdAt: new Date().getTime()
+    });
+    socket.emit('newMessage', {
+        from: 'Admin',
+        text: 'Welcome to chat room',
+        createdAt: new Date().getTime()
+    });
     socket.on('createMessage', (message) => {
         console.log('createMessage', message);
-        socket.broadcast.emit('newMessage', {
+        io.emit('newMessage', {
             from: message.from,
             text: message.text,
             createdAt: new Date().getTime()
